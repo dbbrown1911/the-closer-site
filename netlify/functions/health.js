@@ -5,54 +5,46 @@ exports.handler = async () => {
   const checks = {
     RESO_BASE_URL_set: Boolean(process.env.RESO_BASE_URL),
     auth_configured: authConfigured(),
-    auth_method: process.env.RESO_TOKEN
-      ? 'static token (Bridge)'
-      : authConfigured()
-      ? 'oauth client_credentials'
-      : 'NONE',
+    base_url_preview: (process.env.RESO_BASE_URL || '').replace(/\/$/, ''),
+  };
+  if (!checks.RESO_BASE_URL_set || !checks.auth_configured) {
+    return json({ ok: false, stage: 'config', checks }, 500);
+  }
+
+  const tally = (arr, key) => {
+    const t = {};
+    for (const r of arr) {
+      let v = r[key];
+      if (Array.isArray(v)) v = v.join('+');
+      v = (v == null || v === '') ? '(missing)' : String(v);
+      t[v] = (t[v] || 0) + 1;
+    }
+    return t;
   };
 
-  if (process.env.RESO_BASE_URL) {
-    checks.base_url_preview = process.env.RESO_BASE_URL.replace(/\/$/, '');
-    checks.base_url_has_trailing_property =
-      /\/Property\/?$/i.test(process.env.RESO_BASE_URL);
-  }
-
-  if (!checks.RESO_BASE_URL_set || !checks.auth_configured) {
-    return json({ ok: false, stage: 'config', message: 'Missing required environment variables.', checks }, 500);
-  }
-
   try {
-    const rows = await resoQuery('Property', { $filter: "StandardStatus eq 'Active'", $top: 1 });
+    const activeTry = await resoQuery('Property', {
+      $filter: "StandardStatus eq 'Active'", $top: 3,
+      $select: 'ListingKey,StandardStatus,City',
+    }).catch((e) => ({ err: e.message }));
 
-    if (!rows.length) {
-      const probe = await resoQuery('Property', {
-        $top: 30,
-        $select: 'ListingKey,StandardStatus,MlsStatus,City,ListPrice',
-        $orderby: 'ModificationTimestamp desc',
-      }).catch((e) => ({ probe_error: e.message }));
+    const broad = await resoQuery('Property', {
+      $top: 200, $select: 'StandardStatus,MlsStatus,FeedTypes',
+    }).catch((e) => ({ err: e.message }));
 
-      let status_probe;
-      if (Array.isArray(probe)) {
-        const standard = {}, mls = {};
-        for (const r of probe) {
-          const s = r.StandardStatus == null ? '(missing)' : String(r.StandardStatus);
-          const m = r.MlsStatus == null ? '(missing)' : String(r.MlsStatus);
-          standard[s] = (standard[s] || 0) + 1;
-          mls[m] = (mls[m] || 0) + 1;
-        }
-        status_probe = { sample_size: probe.length, StandardStatus_values: standard, MlsStatus_values: mls, sample_fields: probe.length ? Object.keys(probe[0]).sort() : [] };
-      } else {
-        status_probe = probe;
-      }
-
-      return json({ ok: true, stage: 'connected_no_active', message: "StandardStatus='Active' returned nothing — see status_probe.", checks, status_probe });
-    }
-
-    const sample = rows[0];
-    return json({ ok: true, stage: 'connected', message: 'Success — feed is live.', checks, all_fields: Object.keys(sample).sort() });
+    return json({
+      ok: true,
+      stage: 'diagnose',
+      active_filter_returned: Array.isArray(activeTry) ? activeTry.length : activeTry,
+      broad_sample: Array.isArray(broad) ? {
+        sample_size: broad.length,
+        StandardStatus_values: tally(broad, 'StandardStatus'),
+        MlsStatus_values: tally(broad, 'MlsStatus'),
+        FeedTypes_values: tally(broad, 'FeedTypes'),
+      } : broad,
+      checks,
+    });
   } catch (err) {
-    const status = err.status || 0;
-    return json({ ok: false, stage: 'live_query', status, message: err.message, checks }, 502);
+    return json({ ok: false, stage: 'live_query', message: err.message, checks }, 502);
   }
 };
