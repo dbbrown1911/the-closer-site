@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Listing — The Closer Real Estate Group</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Montserrat:wght@700;800&display=swap" rel="stylesheet" />
+  <link rel="icon" type="image/png" href="/assets/img/favicon.png" />
+  <link rel="stylesheet" href="/assets/css/style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="/"><img src="/assets/img/logo.png" alt="The Closer Real Estate Group, LLC" /></a>
+      <nav><a href="/#search">Search</a><a href="/#contact">Contact</a></nav>
+    </div>
+  </header>
+
+  <main class="wrap detail">
+    <a class="back" href="/#search">‹ Back to search</a>
+    <div id="detail"><div class="notice"><div class="spinner"></div>Loading listing…</div></div>
+  </main>
+
+  <div class="idx-disclaimer">
+    <div class="wrap">
+      Listing data provided by ValleyMLS. Information deemed reliable but not guaranteed.
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <span>© <span id="year"></span> The Closer Real Estate Group, LLC</span>
+      <span>Huntsville · Madison · Athens · Harvest, AL</span>
+    </div>
+  </footer>
+
+  <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+  <script src="/assets/js/listing.js"></script>
+</body>
+</html>

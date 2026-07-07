@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Closer Real Estate Group — North Alabama Homes</title>
+  <meta name="description" content="Search active listings across Huntsville, Madison, Athens, Harvest and North Alabama with The Closer Real Estate Group." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Montserrat:wght@700;800&display=swap" rel="stylesheet" />
+  <link rel="icon" type="image/png" href="/assets/img/favicon.png" />
+  <link rel="stylesheet" href="/assets/css/style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="/"><img src="/assets/img/logo.png" alt="The Closer Real Estate Group, LLC" /></a>
+      <nav>
+        <a href="#search">Search</a>
+        <a href="#contact">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="wrap">
+      <p class="kicker">Huntsville · Madison · Athens · Harvest</p>
+      <h1>Homes that <span class="underline">close</span> in North Alabama</h1>
+      <p class="sub">Live ValleyMLS listings, the full market in one place. Search by city, price, and size, then let's get you to the table.</p>
+
+      <div class="search-panel" id="search">
+        <div class="field">
+          <label for="city">City</label>
+          <input id="city" type="text" placeholder="Any city" list="cities" />
+          <datalist id="cities">
+            <option>Huntsville</option><option>Madison</option><option>Athens</option>
+            <option>Harvest</option><option>Meridianville</option><option>Owens Cross Roads</option>
+          </datalist>
+        </div>
+        <div class="field">
+          <label for="minPrice">Min price</label>
+          <input id="minPrice" type="number" min="0" step="10000" placeholder="No min" />
+        </div>
+        <div class="field">
+          <label for="maxPrice">Max price</label>
+          <input id="maxPrice" type="number" min="0" step="10000" placeholder="No max" />
+        </div>
+        <div class="field">
+          <label for="beds">Beds</label>
+          <select id="beds">
+            <option value="">Any</option><option value="1">1+</option><option value="2">2+</option>
+            <option value="3">3+</option><option value="4">4+</option><option value="5">5+</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="baths">Baths</label>
+          <select id="baths">
+            <option value="">Any</option><option value="1">1+</option><option value="2">2+</option>
+            <option value="3">3+</option><option value="4">4+</option>
+          </select>
+        </div>
+        <button class="btn" id="searchBtn">Search</button>
+      </div>
+    </div>
+  </section>
+
+  <main class="wrap">
+    <div class="results-head">
+      <h2>Active Listings</h2>
+      <div style="display:flex; gap:14px; align-items:center;">
+        <span class="count" id="count"></span>
+        <select id="sort" class="field" style="padding:8px 10px;border:1px solid var(--line);border-radius:8px;">
+          <option value="newest">Newest</option>
+          <option value="price_asc">Price: Low to High</option>
+          <option value="price_desc">Price: High to Low</option>
+        </select>
+      </div>
+    </div>
+
+    <div id="results" class="grid"></div>
+    <div id="status"></div>
+    <div class="pager" id="pager"></div>
+  </main>
+
+  <section class="lead wrap" id="contact" style="margin-bottom:40px;">
+    <h3>Find your North Alabama home</h3>
+    <p class="s">Tell us what you're after. We'll send matching listings and answer anything, no pressure.</p>
+    <!-- Netlify Forms handles this for free — no function or third-party service needed.
+         data-netlify="true" registers it; the hidden field names the form. -->
+    <form name="lead" method="POST" data-netlify="true" netlify-honeypot="bot-field">
+      <input type="hidden" name="form-name" value="lead" />
+      <p hidden><label>Skip: <input name="bot-field" /></label></p>
+      <div class="row">
+        <input type="text" name="name" placeholder="Your name" required />
+        <input type="email" name="email" placeholder="Email" required />
+        <input type="tel" name="phone" placeholder="Phone (optional)" />
+        <input type="text" name="area" placeholder="City or area you're searching" />
+        <textarea name="message" placeholder="What are you looking for?"></textarea>
+      </div>
+      <button class="btn" type="submit" style="margin-top:16px;">Send</button>
+    </form>
+  </section>
+
+  <div class="idx-disclaimer">
+    <div class="wrap" id="idx-disclaimer">
+      Listing data provided by ValleyMLS. Information deemed reliable but not guaranteed.
+      <!-- Replace with the exact attribution text ValleyMLS requires in your IDX agreement. -->
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <span>© <span id="year"></span> The Closer Real Estate Group, LLC</span>
+      <span>Huntsville · Madison · Athens · Harvest, AL</span>
+    </div>
+  </footer>
+
+  <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+  <script src="/assets/js/search.js"></script>
+</body>
+</html>
