@@ -1,0 +1,30 @@
+[build]
+  # No build step needed — this is a static site + serverless functions.
+  publish = "public"
+  functions = "netlify/functions"
+
+[functions]
+  # Netlify's modern Node runtime (global fetch available, no extra deps).
+  node_bundler = "esbuild"
+
+# Friendly URLs: /api/search  ->  the search-listings function
+[[redirects]]
+  from = "/api/search"
+  to = "/.netlify/functions/search-listings"
+  status = 200
+
+[[redirects]]
+  from = "/api/listing"
+  to = "/.netlify/functions/get-listing"
+  status = 200
+
+[[redirects]]
+  from = "/api/health"
+  to = "/.netlify/functions/health"
+  status = 200
+
+# Clean URL for the detail page
+[[redirects]]
+  from = "/listing"
+  to = "/listing.html"
+  status = 200

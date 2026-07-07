@@ -1,0 +1,12 @@
+{
+  "name": "the-closer-site",
+  "version": "1.0.0",
+  "private": true,
+  "description": "The Closer Real Estate Group — ValleyMLS IDX site (Netlify static + serverless).",
+  "scripts": {
+    "dev": "netlify dev"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
